@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ chapitre.titre }} – {{ chapitre.formation.titre }}
+{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+
+        {# Titre formation #}
+        <h1 class="text-center mb-2">{{ chapitre.formation.titre }}</h1>
+        <p class="text-center text-muted mb-4">
+            Chapitre : {{ chapitre.titre }}
+        </p>
+
+        {# Card principale #}
+        <div class="card shadow-sm">
+
+            {% if chapitre.media %}
+                <div class="card-img-top text-center bg-light p-3">
+                    <img
+                        src="{{ asset('medias/' ~ chapitre.media) }}"
+                        class="img-fluid rounded"
+                        style="max-height: 400px;"
+                        alt="Illustration du chapitre"
+                    >
+                </div>
+            {% endif %}
+
+            <div class="card-body px-4 py-5">
+                <div class="fs-5 lh-lg">
+                    {{ chapitre.contenu|raw }}
+                </div>
+            </div>
+
+        </div>
+
+        {# Navigation #}
+        <div class="d-flex justify-content-between align-items-center mt-4">
+
+            <a
+                href="{{ path('app_formation_show', {'formation': chapitre.formation.id}) }}"
+                class="btn btn-outline-secondary"
+            >
+                ← Retour à la formation
+            </a>
+
+            {% if userFormation.chapitreEncours and chapitre.id == userFormation.chapitreEncours.id %}
+                <a
+                    href="{{ path('app_formation_chap_suivant', {'chapitre': chapitre.id}) }}"
+                    class="btn btn-primary"
+                >
+                    Chapitre suivant →
+                </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+{% endblock %}
