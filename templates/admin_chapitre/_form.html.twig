@@ -1,0 +1,23 @@
+{{ form_start(form) }}
+
+{{ form_row(form.titre) }}
+{{ form_row(form.contenu) }}
+{{ form_row(form.media) }}
+{% if form.media %}
+    <img src='{{ asset('medias') }}/{{ chapitre.media }}' width="500px"/>
+{% endif %}
+
+{{ form_rest(form) }}
+
+<button class="btn btn-success">{{ button_label|default('Save') }}</button>
+
+
+{{ form_end(form) }}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        ClassicEditor
+            .create(document.querySelector('.ckeditor'))
+            .catch(error => console.error(error));
+    });
+</script>
