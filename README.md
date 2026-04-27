@@ -53,5 +53,10 @@ Le projet a été pensé pour être évolutif. Parmi les fonctionnalités envisa
 
 ## Intégration du module de paiement avec stripe 
 
-Nous allons passer à l'intégration de stripe avec symfony
+- Nous allons passer à l'intégration de stripe avec symfony
+- L'intégration de stripe est terminé et fonctionnelle
+- Le module stripe est encore en test 
+
+
+
 
