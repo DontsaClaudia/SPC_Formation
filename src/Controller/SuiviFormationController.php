@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class SuiviFormationController extends AbstractController
 {
     #[Route('/suivi-formation/{chapitre}', name: 'app_suivi_formation')]
+    #[IsGranted('ROLE_USER')]
     public function app_suivi_formation(Chapitre $chapitre, FormationUserRepository $formationUserRepository): Response
     {
         $user = $this->getUser();

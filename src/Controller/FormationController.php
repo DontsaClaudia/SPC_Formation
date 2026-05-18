@@ -17,6 +17,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class FormationController extends AbstractController
 {
+
+
+
+      /**
+     * Page de confirmation affichée après un paiement réussi.
+     */
+    #[Route('/formation/successful_payment', name: 'app_formation_successful_payment')]
+    public function app_formation_successful_payment(): Response
+    {
+        return $this->render('formation/success.html.twig', []);
+    }
+
     /**
      * Page listant toutes les formations disponibles.
      * Si une catégorie est sélectionnée en session, on filtre par catégorie.
@@ -136,15 +148,7 @@ final class FormationController extends AbstractController
         return $this->redirect($session->url);
     }
 
-    /**
-     * Page de confirmation affichée après un paiement réussi.
-     */
-    #[Route('/formation/successful_payment', name: 'app_formation_successful_payment')]
-    public function app_formation_successful_payment(): Response
-    {
-        return $this->render('formation/success.html.twig', []);
-    }
-
+  
     /**
      * IPN (Instant Payment Notification) : traitement post-paiement.
      * 
