@@ -177,4 +177,17 @@ final class FormationController extends AbstractController
             'formation' => $formation,
         ]);
     }
+
+    #[Route('/quiz/{chapitre}', name: 'app_quiz_show')]
+    #[IsGranted('ROLE_USER')]
+    public function app_quiz_show(
+        \App\Entity\Chapitre $chapitre
+    ): Response
+    {
+        return $this->render('quiz/show.html.twig', [
+            'chapitre' => $chapitre,
+        ]);
+    }
+
+    
 }
