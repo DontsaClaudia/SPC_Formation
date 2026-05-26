@@ -4,57 +4,258 @@
     {{ chapitre.titre }} – {{ chapitre.formation.titre }}
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/read.css') }}">
+{% endblock %}
+
 {% block body %}
-    <div class="container my-5">
 
-        {# Titre formation #}
-        <h1 class="text-center mb-2">{{ chapitre.formation.titre }}</h1>
-        <p class="text-center text-muted mb-4">
-            Chapitre : {{ chapitre.titre }}
-        </p>
+{% set chapitres = chapitre.formation.chapitres %}
+{% set total = chapitres|length %}
+{% set index = 1 %}
 
-        {# Card principale #}
-        <div class="card shadow-sm">
+{% for chap in chapitres %}
+    {% if chap.id == chapitre.id %}
+        {% set index = loop.index %}
+    {% endif %}
+{% endfor %}
 
-            {% if chapitre.media %}
-                <div class="card-img-top text-center bg-light p-3">
-                    <img
-                        src="{{ asset('medias/' ~ chapitre.media) }}"
-                        class="img-fluid rounded"
-                        style="max-height: 400px;"
-                        alt="Illustration du chapitre"
-                    >
-                </div>
-            {% endif %}
+{% set progression = total > 0 ? ((index / total) * 100)|round : 0 %}
+{% set isLastChapter = index == total %}
 
-            <div class="card-body px-4 py-5">
-                <div class="fs-5 lh-lg">
-                    {{ chapitre.contenu|raw }}
-                </div>
+<div class="learning-layout" id="learningLayout">
+
+    {# SIDEBAR #}
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="formation-badge">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M4 19.5C4 18.12 5.12 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M6.5 2H20V22H6.5C5.12 22 4 20.88 4 19.5V4.5C4 3.12 5.12 2 6.5 2Z" stroke="currentColor" stroke-width="2"/>
+    </svg>
+
+    <span>Formation</span>
+</div>
+            <h2>{{ chapitre.formation.titre }}</h2>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-label">
+                <span>Chapitre {{ index }} sur {{ total }}</span>
+                <span style="color: var(--spc-primary); font-weight: 600;">
+                    {{ progression }}%
+                </span>
             </div>
 
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: {{ progression }}%"></div>
+            </div>
         </div>
 
-        {# Navigation #}
-        <div class="d-flex justify-content-between align-items-center mt-4">
+        <div class="chapters-list">
+            <div class="chapters-list-title">Chapitres</div>
 
-            <a
-                href="{{ path('app_formation_show', {'formation': chapitre.formation.id}) }}"
-                class="btn btn-outline-secondary"
-            >
-                ← Retour à la formation
-            </a>
+            {% for chap in chapitres %}
+                {% set state = chap.id == chapitre.id ? 'active' : (loop.index < index ? 'completed' : 'upcoming') %}
+
+                <a href="{{ path('app_suivi_formation', {'chapitre': chap.id}) }}"
+                   class="chapter-item {{ state }}">
+
+                    <div class="chapter-icon {{ state }}">
+                        {% if state == 'active' %}
+                            <div class="formation-badge">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 19.5C4 18.12 5.12 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M6.5 2H20V22H6.5C5.12 22 4 20.88 4 19.5V4.5C4 3.12 5.12 2 6.5 2Z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+
+                                <span>Formation</span>
+                            </div>
+                        {% elseif state == 'completed' %}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M5 13L9 17L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        {% else %}
+                            {{ loop.index }}
+                        {% endif %}
+                    </div>
+
+                    <div class="chapter-info">
+                        <div class="chapter-title">{{ chap.titre }}</div>
+                        <div class="chapter-duration">
+                            Chapitre {{ loop.index }}
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </aside>
+
+    {# TOGGLE SIDEBAR #}
+    <button class="sidebar-toggle" id="sidebarToggle" title="Masquer/Afficher le menu">
+        ☰
+    </button>
+
+    {# CONTENU PRINCIPAL #}
+    <main class="main-content">
+
+        <div class="content-topbar">
+            <nav class="breadcrumb-nav">
+                <a href="{{ path('app_formation_show', {'formation': chapitre.formation.id}) }}">
+                    {{ chapitre.formation.titre }}
+                </a>
+                <span>›</span>
+                <span>{{ chapitre.titre }}</span>
+            </nav>
 
             {% if userFormation.chapitreEncours and chapitre.id == userFormation.chapitreEncours.id %}
-                <a
-                    href="{{ path('app_formation_chap_suivant', {'chapitre': chapitre.id}) }}"
-                    class="btn btn-primary"
-                >
-                    Chapitre suivant →
-                </a>
+                <span class="current-badge">Chapitre en cours</span>
             {% endif %}
-
         </div>
 
+        <div class="content-area">
+
+            <div class="chapter-number">
+                Chapitre {{ index }} / {{ total }}
+            </div>
+
+            <h1 class="chapter-main-title">
+                {{ chapitre.titre }}
+            </h1>
+
+            <div class="chapter-meta">
+                <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            {{ chapitre.formation.titre }}</span>
+                <span>•</span>
+                <span>{{ progression }}% de progression</span>
+            </div>
+
+{# MEDIA #}
+{% if chapitre.media %}
+    {% set mediaRaw = chapitre.media|trim %}
+    {% set mediaLower = mediaRaw|lower %}
+
+    {% if mediaLower ends with '.jpg'
+        or mediaLower ends with '.jpeg'
+        or mediaLower ends with '.png'
+        or mediaLower ends with '.webp'
+        or mediaLower ends with '.gif' %}
+
+        <div class="chapter-image-wrapper">
+            <img src="{{ asset('medias/' ~ mediaRaw) }}" alt="Illustration du chapitre">
+        </div>
+
+    {% elseif 'youtube.com' in mediaLower or 'youtu.be' in mediaLower %}
+
+        {% set youtubeId = '' %}
+
+        {% if 'watch?v=' in mediaRaw %}
+            {% set youtubeId = mediaRaw|split('watch?v=')|last|split('&')|first %}
+        {% elseif 'youtu.be/' in mediaRaw %}
+            {% set youtubeId = mediaRaw|split('youtu.be/')|last|split('?')|first %}
+        {% elseif 'youtube.com/embed/' in mediaRaw %}
+            {% set youtubeId = mediaRaw|split('youtube.com/embed/')|last|split('?')|first %}
+        {% endif %}
+
+        <div class="chapter-video-wrapper">
+            <div class="video-header">
+                <div class="video-badge">🎥 Vidéo du chapitre</div>
+                <h3>Présentation du chapitre</h3>
+            </div>
+
+            <div class="youtube-wrapper">
+                <iframe
+                    src="https://www.youtube.com/embed/{{ youtubeId }}"
+                    title="Vidéo du chapitre"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+    {% elseif mediaLower ends with '.mp4' or mediaLower ends with '.webm' or mediaLower ends with '.ogg' %}
+
+        <div class="chapter-video-wrapper">
+            <div class="video-header">
+                <div class="video-badge">🎥 Vidéo du chapitre</div>
+                <h3>Présentation du chapitre</h3>
+            </div>
+
+            <video controls class="chapter-video-player">
+                <source src="{{ asset('medias/' ~ mediaRaw) }}">
+                Votre navigateur ne supporte pas la vidéo.
+            </video>
+        </div>
+
+    {% else %}
+
+        <p style="color:red;">
+            Média non reconnu : {{ mediaRaw }}
+        </p>
+
+    {% endif %}
+{% else %}
+    <div class="chapter-image-wrapper chapter-image-empty">
+        <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg></span>
     </div>
+{% endif %}
+
+            <div class="chapter-content-body">
+                {{ chapitre.contenu|raw }}
+            </div>
+
+            <div class="chapter-navigation">
+    <a href="{{ path('app_formation_show', {'formation': chapitre.formation.id}) }}" class="nav-btn nav-btn-prev">
+        <span>←</span>
+        <span class="nav-btn-text">
+            <span class="nav-btn-label">Retour</span>
+            <span>Vue d'ensemble</span>
+        </span>
+    </a>
+
+    {% if index < total %}
+        {% for chap in chapitres %}
+            {% if loop.index == index + 1 %}
+                <a href="{{ path('app_quiz_show', {'chapitre': chapitre.id}) }}"
+   class="nav-btn nav-btn-next">
+            <span class="nav-btn-text" style="text-align: right;">
+                <span class="nav-btn-label">Quiz</span>
+                <span>Tester mes connaissances</span>
+            </span>
+            <span class="nav-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 12V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
+        </a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>
+        </div>
+    </main>
+</div>
+
+<script>
+    const toggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const layout = document.getElementById('learningLayout');
+
+    if (toggle && sidebar && layout) {
+        toggle.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            layout.classList.toggle('sidebar-hidden');
+            toggle.textContent = sidebar.classList.contains('hidden') ? '▶' : '☰';
+        });
+    }
+</script>
+
 {% endblock %}

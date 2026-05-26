@@ -50,3 +50,13 @@ Le projet a été pensé pour être évolutif. Parmi les fonctionnalités envisa
 - Intégration d'un module de paiement en ligne (ex: Stripe)
 - Tableau de bord utilisateur avec suivi de progression
 - Gestion des utilisateurs par l'administrateur
+
+## Intégration du module de paiement avec stripe 
+
+- Nous allons passer à l'intégration de stripe avec symfony
+- L'intégration de stripe est terminé et fonctionnelle
+- Le module stripe est encore en test 
+
+
+
+

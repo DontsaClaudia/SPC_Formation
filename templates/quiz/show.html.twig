@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Quiz – Introduction au management
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/quiz.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+
+    <div class="mb-5">
+        <p class="text-uppercase text-primary fw-bold mb-2">
+            Quiz de validation
+        </p>
+
+        <h1 class="display-5 fw-bold">
+            Introduction au management
+        </h1>
+
+        <p class="text-muted">
+            Répondez aux questions suivantes pour valider vos connaissances.
+        </p>
+    </div>
+
+    <form class="quiz-card">
+
+        {# QUESTION 1 #}
+        <div class="quiz-question">
+            <h3>1. Quel est le rôle principal du management ?</h3>
+
+            <label class="quiz-answer">
+                <input type="radio" name="q1">
+                Organiser et coordonner les ressources
+            </label>
+
+            <label class="quiz-answer">
+                <input type="radio" name="q1">
+                Réduire la communication dans l’entreprise
+            </label>
+
+            <label class="quiz-answer">
+                <input type="radio" name="q1">
+                Supprimer les objectifs
+            </label>
+        </div>
+
+        {# QUESTION 2 #}
+        <div class="quiz-question">
+            <h3>2. Quelle fonction fait partie du management ?</h3>
+
+            <label class="quiz-answer">
+                <input type="radio" name="q2">
+                Planifier
+            </label>
+
+            <label class="quiz-answer">
+                <input type="radio" name="q2">
+                Ignorer les ressources
+            </label>
+
+            <label class="quiz-answer">
+                <input type="radio" name="q2">
+                Éviter le travail d’équipe
+            </label>
+        </div>
+
+        {# QUESTION 3 #}
+        <div class="quiz-question">
+            <h3>3. Pourquoi le management est-il important ?</h3>
+
+            <label class="quiz-answer">
+                <input type="radio" name="q3">
+                Pour améliorer l’efficacité de l’organisation
+            </label>
+
+            <label class="quiz-answer">
+                <input type="radio" name="q3">
+                Pour diminuer la productivité
+            </label>
+
+            <label class="quiz-answer">
+                <input type="radio" name="q3">
+                Pour supprimer les objectifs
+            </label>
+        </div>
+
+        <button type="submit" class="quiz-submit-btn">
+            Valider le quiz
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
